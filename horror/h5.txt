@@ -1,0 +1,8 @@
+Use `fgets(s, 8, stdin)`.
+
+Note that `gcc -Wall` tells you not to use gets(), because it's rarely
+appropriate.
+
+
+There are other problem functions. Another common problem is
+sprintf(), where snprintf() is better.

@@ -1,0 +1,37 @@
+This problem is the combination of macros FISH_START and
+NTH_FISH_SIZE:
+
+ #define FISH_START(p)       (char *)p + sizeof(int)
+ #define NTH_FISH_SIZE(p, n) ((fish *)FISH_START(p))[n].size
+
+A programm would naturally read
+
+  (fish *)FISH_START(p)
+
+as casting the result of FISH_START(p) to a `fish*`, but
+actually the macro expands to
+
+  (fish *)(char *)p + sizeof(int)
+
+which adds `sizeof(int)*sizeof(fish)` to the pointer `p`.
+
+Checking the output of `gcc -E h6.c` may make the problem more clear.
+
+
+The first rule of C macros: don't use C macros.
+
+The second rule of C macros: put parentheses around every use of
+an argument and around the whole result:
+
+ #define SCHOOL_COUNT(p)     (*(int *)(p))
+ #define FISH_START(p)       ((char *)(p) + sizeof(int))
+ #define NTH_FISH_SIZE(p, n) (((fish *)FISH_START(p))[n].size)
+
+
+Tool support: Functions instead of macros!
+
+Besides Valgrind, gcc also supports an "address sanitizer"
+mode that can help for prblems like this:
+
+ $ gcc-4.9 -fsanitize=address h6.c                         
+ $ env LD_LIBRARY_PATH=/usr/local/stow/gcc/amd64_linux26/gcc-4.9.2/lib64/ ./a.out

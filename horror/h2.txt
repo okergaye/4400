@@ -1,0 +1,21 @@
+The matrix_times_vector() function correctly allocates memory for y,
+but the function works ony if the bytes of the newly allocated memory
+are all zeroed. The matrix_times_vector() function should explicitly
+zero out the memory.
+
+Unfortunately, memory produced by malloc() often is zeroed, especially
+at first, so this mistake can go undetected for a while, and then go
+wrong after you change some other part of the program, so you may
+become confused and think that the part you changed was incorrect.
+
+One good solution is to use calloc() instead of malloc().
+
+
+Tool support:
+
+  valgrind ./a.out
+
+reports the use of uninitialized memory in this case. Somewhat
+confuisngly, it reports the error as being from printf(), because
+that's where the eventual result of uninitialized computation becomes
+visible.

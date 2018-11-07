@@ -1,0 +1,9 @@
+The scanf() function needs an address to put an integer (matching the
+pattern "%d") into. When `v` is provided to scanf() instead of `&v`,
+the value of `v` is misinterpreted as a pointer.
+
+
+Tool support: using `gcc -Wall` would have highlighted this bug. C's
+type system is too weak to make the mistake a type error, but modern
+compilers all know about printf() and scanf() and can perform
+consistency checks on the format/pattern string and arguments.

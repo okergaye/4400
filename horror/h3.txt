@@ -1,0 +1,11 @@
+The matrix_times_vector() function this time *incorrectly* allocates
+memory for y, because it doesn't multiply N by `sizeof(int)`.
+
+The reaosn "h3.c" uses a bigger matrix than "h2.c" is to make it
+easier to provoke a crash. Because the allocator might make extra
+room, anyway, or because it might not be using memory after the
+allocated area, allocating too-little memory is often a difficult bug
+to detect by testing alone.
+
+
+Tool support: Valgrind, again.

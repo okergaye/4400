@@ -1,0 +1,4 @@
+The loop to initiaize memory is wrong. The variable `i` should start
+at `N`, not `N+1`.
+
+Tool support: Valgrind.
