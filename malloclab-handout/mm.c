@@ -40,7 +40,7 @@ void *mm_malloc(size_t size)
   void *bp = first_bp;
 
   if (GET_ALLOC(HDRP(bp))) {
-    /* Our only block is already allocated */
+    /* Our only block is already allocated test*/
     return NULL;
   } else {
     set_allocated(bp);
