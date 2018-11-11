@@ -177,7 +177,7 @@ static void init_heap(int n, int min_size, int total_size, int compact)
 {
   long max_pad = ALIGN(min_size) - min_size;
   long overhead = (compact ? 16 : 32);
-  long heap_size = (n * (overhead + max_pad)) + total_size;
+  long heap_size = (n * (overhead + max_pad)) + total_size + 64;
   long ps = getpagesize();
   void *heap;
 
@@ -301,13 +301,21 @@ void alloc_singles(int n, int s, int iters, int compact)
       break;
     case 3:
       {
-        int k = 17 % n;
+        int n_ish;
+        int k;
 
-        /* Remove half of them */
+        /* Find a number like n, but a power of 2, so that 7 and this
+           number are relatively prime */
+        n_ish = 1;
+        while (n_ish * 2 < n)
+          n_ish *= 2;
+
+        /* Remove one fourth of them */
+        k = 17 % n_ish;
         for (i = 0; i < n/2; i++) {
           mm_free(p[k]);
           p[k] = NULL;
-          k = (k + 7) % n;
+          k = (k + 7) % n_ish;
         }
         
         /* Check remaining objects */
@@ -318,11 +326,11 @@ void alloc_singles(int n, int s, int iters, int compact)
 
         if (j & 0x4) {
           /* Allocate replacements for freed objects */
-          k = 17 % n;
+          k = 17 % n_ish;
           for (i = 0; i < n/2; i++) {
             p[k] = checked_malloc(s, 0);
             fill(p[k], k+j, s);
-            k = (k + 7) % n;
+            k = (k + 7) % n_ish;
           }
 
           /* Check and free all objects */
@@ -332,9 +340,9 @@ void alloc_singles(int n, int s, int iters, int compact)
           }
         } else {
           /* Free remaining objects */
-          for (i = 0; i < n/2; i++) {
-            mm_free(p[k]);
-            k = (k + 7) % n;
+          for (i = 0; i < n; i++) {
+            if (p[i])
+              mm_free(p[i]);
           }
         }
       }

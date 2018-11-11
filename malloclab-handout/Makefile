@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -O2 -g -I.
+CFLAGS = -Wall -g -I.
 MM = mm.c
 
 OBJS = usemem.o mm.o
@@ -23,6 +23,8 @@ test60: usemem
 	./usemem --singles $(COMPACT)
 	./usemem --singles --s 1 $(COMPACT)
 	./usemem --singles --s 37 $(COMPACT)
+	./usemem --singles --singles --s 32 --n 128 $(COMPACT)
+	./usemem --singles --singles --s 32 --n 126 $(COMPACT)
 	./usemem --excessive $(COMPACT)
 	./usemem --shrinking $(COMPACT)
 	./usemem --shrinking --s 32 $(COMPACT)
